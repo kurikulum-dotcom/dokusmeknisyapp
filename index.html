@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>SMKN 1 Sidayu</title>
+    
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Doku Smeknisy Apps">
+    <link rel="apple-touch-icon" href="https://smkn1sidayu.sch.id/wp-content/uploads/2016/06/cropped-icon_sdy.png">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background-color: #f3f4f6;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        iframe {
+            width: 100%; height: 100%;
+            border: none; display: block;
+        }
+
+        /* --- LOADER STYLE --- */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid #e5e7eb; border-top: 4px solid #2563eb;
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- BLOCKING INSTALL SCREEN --- */
+        #install-screen {
+            display: none; /* Default sembunyi */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .install-content {
+            max-width: 400px;
+            width: 100%;
+            display: flex; flex-direction: column; align-items: center;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .app-logo {
+            width: 100px; height: 100px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+        }
+
+        h1 { font-size: 24px; font-weight: 800; color: #1f2937; margin-bottom: 10px; }
+        p { font-size: 15px; color: #6b7280; line-height: 1.5; margin-bottom: 30px; }
+
+        .btn-install {
+            width: 100%;
+            padding: 16px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+            transition: transform 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-install:active { transform: scale(0.98); }
+
+        /* Instruksi Khusus iOS */
+        #ios-instruction {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f3f4f6;
+            border-radius: 12px;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- IFRAME KE APPS SCRIPT -->
+    <iframe 
+        id="app-frame"
+        src="https://script.google.com/macros/s/AKfycbyh6sSKFzJjwNcf9NnASUwlxdPEyOKtnC8iaiMppr5eaFlyjomKb3PePin-b39MPjR2/exec" 
+        title="Dokur App Smeknisy" 
+        allow="camera; microphone; geolocation; fullscreen; payment"
+        onload="hideLoader()">
+    </iframe>
+
+    <!-- LAYAR PEMBLOKIR (INSTALL SCREEN) -->
+    <div id="install-screen">
+        <div class="install-content">
+            <img src="https://smkn1sidayu.sch.id/wp-content/uploads/2016/06/cropped-icon_sdy.png" class="app-logo" alt="Logo">
+            
+            <h1>Doku Smeknisy Apps</h1>
+            <p>Untuk mengakses Doku Smeknisy Apps, Anda <strong>wajib menginstal</strong> aplikasi ini agar berjalan optimal dalam layar penuh.</p>
+            
+            <!-- Tombol Install Android -->
+            <button id="btn-install-action" class="btn-install" onclick="installApp()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                Install Aplikasi Sekarang
+            </button>
+
+            <!-- Panduan iOS -->
+            <div id="ios-instruction">
+                <p style="margin-bottom:5px; font-weight:bold;">Pengguna iPhone/iPad:</p>
+                1. Ketuk tombol <strong>Share</strong> (kotak panah) di bawah.<br>
+                2. Pilih menu <strong>"Add to Home Screen"</strong> (Tambah ke Layar Utama).
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. Loader Logic
+        function hideLoader() {
+            setTimeout(() => {
+                checkInstallStatus();
+            }, 500);
+        }
+
+        // 2. Logic Cek Install & Tampilkan Blocking Screen
+        let deferredPrompt;
+        const installScreen = document.getElementById('install-screen');
+        const loader = document.getElementById('loader');
+        const iosInstruction = document.getElementById('ios-instruction');
+        const androidBtn = document.getElementById('btn-install-action');
+
+        function checkInstallStatus() {
+            // Cek apakah mode standalone (sudah install)
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+            if (isStandalone) {
+                // SUDAH INSTALL: Hapus loader, biarkan iframe terlihat
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 500);
+            } else {
+                // BELUM INSTALL: Tampilkan Layar Blokir
+                installScreen.style.display = 'flex';
+                
+                const isIos = /iphone|ipad|ipod/.test( window.navigator.userAgent.toLowerCase() );
+                if (isIos) {
+                    androidBtn.style.display = 'none';
+                    iosInstruction.style.display = 'block';
+                }
+
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 500);
+            }
+        }
+
+        // 3. Menangkap event install Android
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installScreen.style.display = 'flex';
+        });
+
+        // 4. Fungsi Eksekusi Install (DENGAN LOGIKA CEK DOUBLE)
+        async function installApp() {
+            if (deferredPrompt) {
+                // Jika browser memberikan izin install
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    deferredPrompt = null;
+                    // Reset halaman untuk cek status baru
+                    window.location.reload(); 
+                }
+            } else {
+                // --- BAGIAN BARU: Jika browser TIDAK memberi izin (Artinya sudah diinstall/tidak support) ---
+                alert("✅ Aplikasi Sudah Terpasang!\n\nSilakan cek layar utama (Home Screen) HP Anda.\nCari ikon logo SMKN 1 Sidayu dengan nama 'Doku Smeknisy Apps'.");
+            }
+        }
+
+        // 5. Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js');
+            });
+        }
+    </script>
+</body>
+</html>
