@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>SMKN 1 Sidayu</title>
+    <title>Dokumen Kurikulum Smeknisy Apps</title>
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
@@ -12,7 +12,7 @@
     <!-- iOS Support -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Doku Smeknisy Apps">
+    <meta name="apple-mobile-web-app-title" content="Dokumen Kurikulum Smeknisy Apps">
     <link rel="apple-touch-icon" href="https://smkn1sidayu.sch.id/wp-content/uploads/2016/06/cropped-icon_sdy.png">
 
     <style>
@@ -59,16 +59,14 @@
         }
 
         .install-content {
-            max-width: 400px;
-            width: 100%;
+            max-width: 400px; width: 100%;
             display: flex; flex-direction: column; align-items: center;
             animation: fadeIn 0.5s ease-out;
         }
 
         .app-logo {
             width: 100px; height: 100px;
-            border-radius: 20px;
-            margin-bottom: 25px;
+            border-radius: 20px; margin-bottom: 25px;
             box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
         }
 
@@ -76,30 +74,27 @@
         p { font-size: 15px; color: #6b7280; line-height: 1.5; margin-bottom: 30px; }
 
         .btn-install {
-            width: 100%;
-            padding: 16px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
+            width: 100%; padding: 16px;
+            background: #2563eb; color: white;
+            border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 600; cursor: pointer;
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
-            transition: transform 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-bottom: 15px;
         }
         .btn-install:active { transform: scale(0.98); }
 
-        /* Instruksi Khusus iOS */
-        #ios-instruction {
+        .btn-help {
+            background: none; border: none; color: #6b7280;
+            font-size: 13px; text-decoration: underline; cursor: pointer;
+        }
+
+        /* Instruksi Khusus iOS & Manual */
+        #manual-instruction {
             display: none;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f3f4f6;
-            border-radius: 12px;
-            font-size: 13px;
-            color: #4b5563;
+            margin-top: 20px; padding: 15px;
+            background: #f0f9ff; border: 1px solid #bae6fd;
+            border-radius: 12px; font-size: 13px; color: #0369a1; text-align: left;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -117,7 +112,7 @@
     <iframe 
         id="app-frame"
         src="https://script.google.com/macros/s/AKfycbyh6sSKFzJjwNcf9NnASUwlxdPEyOKtnC8iaiMppr5eaFlyjomKb3PePin-b39MPjR2/exec" 
-        title="Dokur App Smeknisy" 
+        title="Dokumen Kurikulum Smeknisy Apps" 
         allow="camera; microphone; geolocation; fullscreen; payment"
         onload="hideLoader()">
     </iframe>
@@ -128,19 +123,22 @@
             <img src="https://smkn1sidayu.sch.id/wp-content/uploads/2016/06/cropped-icon_sdy.png" class="app-logo" alt="Logo">
             
             <h1>Doku Smeknisy Apps</h1>
-            <p>Untuk mengakses Doku Smeknisy Apps, Anda <strong>wajib menginstal</strong> aplikasi ini agar berjalan optimal dalam layar penuh.</p>
+            <p>Wajib instalasi untuk akses penuh. Klik tombol di bawah ini.</p>
             
-            <!-- Tombol Install Android -->
+            <!-- Tombol Install -->
             <button id="btn-install-action" class="btn-install" onclick="installApp()">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                 Install Aplikasi Sekarang
             </button>
+            
+            <button class="btn-help" onclick="window.location.reload()">Muat Ulang Halaman</button>
 
-            <!-- Panduan iOS -->
-            <div id="ios-instruction">
-                <p style="margin-bottom:5px; font-weight:bold;">Pengguna iPhone/iPad:</p>
-                1. Ketuk tombol <strong>Share</strong> (kotak panah) di bawah.<br>
-                2. Pilih menu <strong>"Add to Home Screen"</strong> (Tambah ke Layar Utama).
+            <!-- Panduan Manual (Akan muncul jika otomatis gagal) -->
+            <div id="manual-instruction">
+                <strong>⚠️ Tidak ada respon?</strong><br>
+                Coba cara manual:<br>
+                1. Klik ikon <strong>Titik Tiga (⋮)</strong> atau <strong>Share</strong> di browser.<br>
+                2. Cari & pilih menu <strong>"Install App"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.
             </div>
         </div>
     </div>
@@ -153,11 +151,11 @@
             }, 500);
         }
 
-        // 2. Logic Cek Install & Tampilkan Blocking Screen
+        // 2. Variables
         let deferredPrompt;
         const installScreen = document.getElementById('install-screen');
         const loader = document.getElementById('loader');
-        const iosInstruction = document.getElementById('ios-instruction');
+        const manualInstruction = document.getElementById('manual-instruction');
         const androidBtn = document.getElementById('btn-install-action');
 
         function checkInstallStatus() {
@@ -165,17 +163,19 @@
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
             if (isStandalone) {
-                // SUDAH INSTALL: Hapus loader, biarkan iframe terlihat
+                // SUDAH INSTALL: Masuk aplikasi
                 loader.style.opacity = '0';
                 setTimeout(() => { loader.style.display = 'none'; }, 500);
             } else {
-                // BELUM INSTALL: Tampilkan Layar Blokir
+                // BELUM INSTALL: Blokir layar
                 installScreen.style.display = 'flex';
                 
+                // Deteksi iOS langsung tampilkan manual
                 const isIos = /iphone|ipad|ipod/.test( window.navigator.userAgent.toLowerCase() );
                 if (isIos) {
                     androidBtn.style.display = 'none';
-                    iosInstruction.style.display = 'block';
+                    manualInstruction.style.display = 'block';
+                    manualInstruction.innerHTML = "<strong>Pengguna iOS:</strong><br>1. Ketuk tombol <strong>Share</strong> (kotak panah).<br>2. Pilih <strong>'Add to Home Screen'</strong>.";
                 }
 
                 loader.style.opacity = '0';
@@ -183,27 +183,29 @@
             }
         }
 
-        // 3. Menangkap event install Android
+        // 3. Menangkap event install
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            installScreen.style.display = 'flex';
+            console.log("Install prompt siap!");
         });
 
-        // 4. Fungsi Eksekusi Install (DENGAN LOGIKA CEK DOUBLE)
+        // 4. Fungsi Install yang LEBIH PINTAR
         async function installApp() {
             if (deferredPrompt) {
-                // Jika browser memberikan izin install
+                // Jika browser siap menginstal otomatis
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
                     deferredPrompt = null;
-                    // Reset halaman untuk cek status baru
                     window.location.reload(); 
                 }
             } else {
-                // --- BAGIAN BARU: Jika browser TIDAK memberi izin (Artinya sudah diinstall/tidak support) ---
-                alert("✅ Aplikasi Sudah Terpasang!\n\nSilakan cek layar utama (Home Screen) HP Anda.\nCari ikon logo SMKN 1 Sidayu dengan nama 'Doku Smeknisy Apps'.");
+                // JIKA GAGAL OTOMATIS (Mungkin sudah pernah di-dismiss atau browser memblokir)
+                // Munculkan panduan manual DI HALAMAN (Bukan Alert) agar lebih enak dibaca
+                manualInstruction.style.display = 'block';
+                androidBtn.innerHTML = "Coba Cara Manual di Bawah 👇";
+                androidBtn.style.background = "#6b7280"; // Ubah warna jadi abu
             }
         }
 
