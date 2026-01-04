@@ -24,7 +24,7 @@
             border: none; display: block;
         }
 
-        /* --- LOADER STYLE --- */
+        /* --- LOADER --- */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #ffffff;
@@ -48,7 +48,7 @@
         }
 
         .install-content {
-            max-width: 400px; width: 100%;
+            max-width: 450px; width: 100%;
             display: flex; flex-direction: column; align-items: center;
             animation: fadeIn 0.5s ease-out;
         }
@@ -73,29 +73,18 @@
         .btn-install:hover { background: #1d4ed8; }
         .btn-install:active { transform: scale(0.98); }
 
-        /* Instruksi Manual & Desktop */
+        /* Instruksi Manual */
         #manual-instruction {
             display: none; margin-top: 15px; padding: 15px;
             background: #eff6ff; border: 1px solid #bfdbfe;
             border-radius: 12px; font-size: 13px; color: #1e40af; text-align: left;
         }
-
-        /* Panah Petunjuk Desktop (Pojok Kanan Atas) */
-        #desktop-arrow {
-            display: none; position: fixed; top: 20px; right: 80px;
-            background: #2563eb; color: white; padding: 10px 20px;
-            border-radius: 50px; font-size: 14px; font-weight: bold;
-            animation: bounce 2s infinite; z-index: 10001;
-        }
-        #desktop-arrow::after {
-            content: ''; position: absolute; right: -8px; top: 50%;
-            transform: translateY(-50%);
-            border-width: 8px 0 8px 8px; border-style: solid;
-            border-color: transparent transparent transparent #2563eb;
+        
+        #manual-instruction strong {
+             color: #172554;
         }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateX(0);} 40% {transform: translateX(-10px);} 60% {transform: translateX(-5px);} }
 
     </style>
 </head>
@@ -110,7 +99,7 @@
     <iframe 
         id="app-frame"
         src="https://script.google.com/macros/s/AKfycbyh6sSKFzJjwNcf9NnASUwlxdPEyOKtnC8iaiMppr5eaFlyjomKb3PePin-b39MPjR2/exec" 
-        title="Dok Smeknisy Apps" 
+        title="Doku Smeknisy Apps" 
         allow="camera; microphone; geolocation; fullscreen; payment"
         onload="hideLoader()">
     </iframe>
@@ -120,7 +109,7 @@
         <div class="install-content">
             <img src="https://smkn1sidayu.sch.id/wp-content/uploads/2016/06/cropped-icon_sdy.png" class="app-logo" alt="Logo">
             
-            <h1>Dokumen Kurikulum Smeknisy Apps</h1>
+            <h1>Aplikasi Doku Smeknisy</h1>
             <p>Wajib instalasi untuk akses penuh sistem sekolah.</p>
             
             <button id="btn-install-action" class="btn-install" onclick="installApp()">
@@ -135,9 +124,6 @@
         </div>
     </div>
 
-    <!-- Petunjuk Desktop -->
-    <div id="desktop-arrow">Klik ikon Install di sini 👉</div>
-
     <script>
         // 1. Loader
         function hideLoader() {
@@ -149,11 +135,9 @@
         const installScreen = document.getElementById('install-screen');
         const loader = document.getElementById('loader');
         const manualInstruction = document.getElementById('manual-instruction');
-        const desktopArrow = document.getElementById('desktop-arrow');
         const installBtn = document.getElementById('btn-install-action');
 
         function checkInstallStatus() {
-            // Cek Mode Standalone
             const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
             if (isStandalone) {
@@ -178,11 +162,16 @@
 
             if (!isMobile) {
                 // INI DESKTOP/LAPTOP
-                // Sembunyikan tombol install biasa jika mau, atau biarkan sebagai pemicu panah
                 manualInstruction.style.display = 'block';
-                manualInstruction.innerHTML = "<strong>Di Laptop/PC:</strong><br>Klik ikon Install (tanda panah/plus) di ujung kanan kolom alamat browser (Address Bar).";
-                // Tampilkan panah animasi di pojok kanan atas
-                desktopArrow.style.display = 'block';
+                // Petunjuk Manual Teks Saja
+                manualInstruction.innerHTML = `
+                    <strong>Cara Manual di Laptop/PC:</strong><br>
+                    1. Klik <strong>Titik Tiga (⋮)</strong> di pojok kanan atas.<br>
+                    2. Cari menu <strong>'Simpan dan Bagikan'</strong> (Save and share).<br>
+                    3. Klik Muat Ulang.<br>
+                    4. Jika tidak ada, cari <strong>'Fitur Lainnya'</strong> (More Tools) > <strong>'Buat Pintasan'</strong> (Create Shortcut).<br>
+                    5. Pastikan centang kotak <strong>'Open as window'</strong>.
+                `;
             } 
             else if (isIos) {
                 // INI IPHONE
@@ -196,7 +185,6 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Di Desktop, kadang event ini firing tapi prompt di-suppress ke address bar
             console.log("Install prompt captured");
         });
 
@@ -211,15 +199,15 @@
                 }
             } else {
                 // Fallback untuk Desktop yang "mentok"
-                // Tampilkan instruksi lebih jelas
-                manualInstruction.style.display = 'block';
-                
-                // Cek apakah Desktop
                 const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent);
+                
                 if (!isMobile) {
-                     alert("Perhatikan pojok kanan atas browser Anda.\nKlik ikon 'Install' atau 'tanda tambah' di kolom URL.");
+                     // Highlight area manual
+                     manualInstruction.style.backgroundColor = "#ffedd5"; 
+                     setTimeout(() => { manualInstruction.style.backgroundColor = "#eff6ff"; }, 1000);
                 } else {
-                     manualInstruction.innerHTML = "<strong>Cara Manual:</strong><br>Buka menu browser (Titik Tiga) > Pilih 'Install App'.";
+                     manualInstruction.style.display = 'block';
+                     manualInstruction.innerHTML = "<strong>Cara Manual:</strong><br>Buka menu browser (Titik Tiga) > Pilih 'Install App' atau 'Tambahkan ke Layar Utama'.";
                 }
             }
         }
